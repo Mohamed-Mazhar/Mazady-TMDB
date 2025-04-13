@@ -1,5 +1,7 @@
 package com.example.mazadytmdb.features.movies.data.mapper
 
+import com.example.mazadytmdb.features.moviedetails.data.persistence.database.MovieDetailsEntity
+import com.example.mazadytmdb.features.moviedetails.domain.model.MovieDetails
 import com.example.mazadytmdb.features.movies.data.dto.MovieDto
 import com.example.mazadytmdb.features.movies.data.persistence.database.MovieEntity
 import com.example.mazadytmdb.features.movies.domain.model.Movie

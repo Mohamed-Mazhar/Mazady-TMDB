@@ -8,6 +8,6 @@ import org.koin.dsl.module
 
 val repositoryModules = module {
     single { MoviesRepository(get(), get()) }
-    single { MovieDetailsRepository(get()) }
+    single { MovieDetailsRepository(get(), get()) }
     single { ImageRepository(androidContext()) }
 }

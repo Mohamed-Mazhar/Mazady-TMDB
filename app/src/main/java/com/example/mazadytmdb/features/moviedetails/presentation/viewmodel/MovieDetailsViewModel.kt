@@ -17,6 +17,8 @@ class MovieDetailsViewModel(private val movieDetailsRepository: MovieDetailsRepo
     private val _movieDetails = MutableStateFlow<MovieDetails?>(null)
     val movieDetails: StateFlow<MovieDetails?> = _movieDetails.asStateFlow()
 
+    private val _cachedMovieDetails = MutableStateFlow<MovieDetails?>(null)
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
@@ -26,14 +28,19 @@ class MovieDetailsViewModel(private val movieDetailsRepository: MovieDetailsRepo
     fun loadMovieDetails(movieId: Int) {
         _isLoading.value = true
         viewModelScope.launch {
+            _cachedMovieDetails.value = movieDetailsRepository.getCachedMovieDetails(movieId)
             when (val result = movieDetailsRepository.getMovieDetails(movieId)) {
                 is Result.Success -> {
+                    movieDetailsRepository.insertMovieDetails(result.data)
                     _movieDetails.value = result.data // Success case
                 }
                 is Result.Error -> {
                     _errorMessage.value = when (result.apiError) {
                         is ApiError.NetworkError -> "Failed to load movies"
-                        is ApiError.NoInternetError -> "No internet connection"
+                        is ApiError.NoInternetError -> {
+                            _movieDetails.value = _cachedMovieDetails.value
+                            "No internet connection"
+                        }
                         is ApiError.ServerError -> "Server error occurred"
                     }
                 }

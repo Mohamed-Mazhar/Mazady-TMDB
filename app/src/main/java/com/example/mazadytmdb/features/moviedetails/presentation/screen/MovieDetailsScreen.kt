@@ -1,6 +1,9 @@
 package com.example.mazadytmdb.features.moviedetails.presentation.screen
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.mazadytmdb.R
 import com.example.mazadytmdb.databinding.MovieDetailsScreenBinding
 import com.example.mazadytmdb.features.moviedetails.domain.model.MovieDetails
@@ -66,8 +72,16 @@ class MovieDetailsScreen : Fragment() {
         movie?.let {
             // Load backdrop image
             Glide.with(this)
+                .asBitmap()
                 .load("https://image.tmdb.org/t/p/w1280${it.backdropPath}")
-                .into(binding.movieBackdrop)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        binding.movieBackdrop.setImageBitmap(resource)
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                })
 
             binding.movieTitle.text = it.title
             binding.movieOverview.text = it.overview
