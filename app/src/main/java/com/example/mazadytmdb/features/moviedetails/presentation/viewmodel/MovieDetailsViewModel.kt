@@ -2,10 +2,10 @@ package com.example.mazadytmdb.features.moviedetails.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mazadytmdb.core.domain.ApiError
 import com.example.mazadytmdb.core.domain.Result
 import com.example.mazadytmdb.features.moviedetails.data.repository.MovieDetailsRepository
 import com.example.mazadytmdb.features.moviedetails.domain.model.MovieDetails
-import com.example.mazadytmdb.features.movies.domain.model.Movie
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,14 +31,18 @@ class MovieDetailsViewModel(private val movieDetailsRepository: MovieDetailsRepo
                     _movieDetails.value = result.data // Success case
                 }
                 is Result.Error -> {
-                    _errorMessage.value = result.message ?: "Unknown error"
+                    _errorMessage.value = when (result.apiError) {
+                        is ApiError.NetworkError -> "Failed to load movies"
+                        is ApiError.NoInternetError -> "No internet connection"
+                        is ApiError.ServerError -> "Server error occurred"
+                    }
                 }
             }
             _isLoading.value = false
         }
     }
 
-    fun toggleFavorite(movie: MovieDetails) {
+    fun toggleFavorite() {
         viewModelScope.launch {
             try {
                 _movieDetails.update {

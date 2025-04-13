@@ -84,7 +84,7 @@ class MovieDetailsScreen : Fragment() {
             binding.movieReleaseDate.text = "Release Date: ${it.releaseDate ?: "N/A"}"
             binding.movieRating.text = "Rating: ${it.voteAverage}/10"
             binding.favoriteButton.setOnClickListener { _ ->
-                viewModel.toggleFavorite(it)
+                viewModel.toggleFavorite()
             }
             if (it.isFavorite) {
                 binding.favoriteButton.setImageResource(R.drawable.favorite_icon_filled)

@@ -2,6 +2,7 @@ package com.example.mazadytmdb.features.movies.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mazadytmdb.core.domain.ApiError
 import com.example.mazadytmdb.core.domain.Result
 import com.example.mazadytmdb.features.movies.data.repository.MoviesRepository
 import com.example.mazadytmdb.features.movies.domain.model.Movie
@@ -40,7 +41,11 @@ class MoviesViewModel(private val moviesRepo: MoviesRepository) : ViewModel() {
                         currentPage++
                     }
                     is Result.Error -> {
-                        _error.value = null
+                        _error.value = when (newMoviesResult.apiError) {
+                            is ApiError.NetworkError -> "Failed to load movies"
+                            is ApiError.NoInternetError -> "No internet connection"
+                            is ApiError.ServerError -> "Server error occurred"
+                        }
                     }
                 }
             } catch (e: Exception) {
