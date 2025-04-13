@@ -1,6 +1,7 @@
 package com.example.mazadytmdb
 
 import android.app.Application
+import com.example.mazadytmdb.core.dependecies.databaseModule
 import com.example.mazadytmdb.core.dependecies.networkModule
 import com.example.mazadytmdb.core.dependecies.repositoryModules
 import com.example.mazadytmdb.core.dependecies.viewModelModules
@@ -15,6 +16,7 @@ class TMDBApplication: Application() {
             androidContext(this@TMDBApplication)
 
             modules(
+                databaseModule,
                 networkModule,
                 repositoryModules,
                 viewModelModules

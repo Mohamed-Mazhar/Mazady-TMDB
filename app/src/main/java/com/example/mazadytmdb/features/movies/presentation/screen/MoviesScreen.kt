@@ -70,6 +70,9 @@ class MoviesScreen : Fragment() {
             },
             onFavoriteClicked = { movie ->
                 viewModel.toggleFavorite(movie)
+            },
+            onImageLoaded = { movie, resource ->
+                viewModel.saveImageBitmap(movie, resource)
             }
         )
         binding.moviesRecyclerView.apply {
